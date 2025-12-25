@@ -54,6 +54,8 @@ jobs:
     steps:
       - name: Install Docker
         run: |
+          sh sudo usermod -aG docker $USER
+          sh sudo chmod 666 /var/run/docker.sock
           curl -fsSL https://get.docker.com -o get-docker.sh
           sh get-docker.sh
       - name: Verify Docker Installation
