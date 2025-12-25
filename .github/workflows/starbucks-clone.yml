@@ -31,6 +31,8 @@ jobs:
     steps:
     - name: Install Dependencies
       run: npm install --legacy-peer-deps
+    - name: linting the code
+      run: npm run lint  
   tests:
     runs-on: self-hosted
     needs: install_dependencies
