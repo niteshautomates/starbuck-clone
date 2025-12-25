@@ -51,17 +51,6 @@ jobs:
   #       run: echo "Application Started"
   docker_installation:
     runs-on: self-hosted
-    steps:
-      - name: Install Docker
-        run: |
-          sh sudo usermod -aG docker $USER
-          sh sudo chmod 666 /var/run/docker.sock
-          curl -fsSL https://get.docker.com -o get-docker.sh
-          sh get-docker.sh
-      - name: Verify Docker Installation
-        run: docker --version
-  image_build:
-    runs-on: self-hosted
     needs: tests
     steps:
       - name: Build Docker Image
@@ -71,7 +60,7 @@ jobs:
         run: docker images | grep starbucks-clone-image      
   run_docker_container:
     runs-on: self-hosted
-    needs: image_build
+    needs: docker_installation
     steps:
       - name: Run Docker Container
         run: |
