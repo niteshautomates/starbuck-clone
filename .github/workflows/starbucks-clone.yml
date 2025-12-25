@@ -35,7 +35,7 @@ jobs:
     #     working-directory: ./starbucks
     steps:
     - name: Install Dependencies
-      run: npm install
+      run: npm install --legacy-peer-deps
   tests:
     runs-on: self-hosted
     needs: install_dependencies
