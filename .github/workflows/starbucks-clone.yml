@@ -55,6 +55,19 @@ jobs:
   #   steps:
   #     - name: Start Application
   #       run: echo "Application Started"
+  trivy_fs_scan:
+    runs-on: self-hosted
+    needs: tests
+    steps:
+      - name: Trivy File System Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-path: .
+          format: table
+          exit-code: '1'
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
   docker_installation:
     runs-on: self-hosted
     needs: tests
@@ -64,6 +77,19 @@ jobs:
           docker build -t starbucks-clone-image .
       - name: Verify Docker Image
         run: docker images | grep starbucks-clone-image      
+  docker_image_scan:
+    runs-on: self-hosted
+    needs: docker_installation
+    steps:
+      - name: Trivy Docker Image Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: image
+          image-ref: starbucks-clone-image
+          format: table
+          exit-code: '1'
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true        
   run_docker_container:
     runs-on: self-hosted
     needs: docker_installation
