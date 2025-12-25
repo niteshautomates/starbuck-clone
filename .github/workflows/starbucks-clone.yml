@@ -27,10 +27,18 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        
+
+  install_dependencies:
+    runs-on: self-hosted
+    steps:
     - name: Install Dependencies
       run: npm install
+  tests:
+    runs-on: self-hosted
+    needs: install_dependencies
+    steps:
     - name: Run Tests 
       run: npm run test
+
     - name: Start Application
-      run: npm start
+      run: echo "Application Started"
