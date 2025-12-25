@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  checkout:
 
     runs-on: self-hosted
     steps:
@@ -24,6 +24,7 @@ jobs:
 
   install_dependencies:
     runs-on: self-hosted
+    needs: checkout
     # defaults:
     #   run:
     #     working-directory: ./starbucks
@@ -48,3 +49,30 @@ jobs:
     steps:
       - name: Start Application
         run: echo "Application Started"
+  docker_installation:
+    runs-on: self-hosted
+    steps:
+      - name: Install Docker
+        run: |
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sh get-docker.sh
+      - name: Verify Docker Installation
+        run: docker --version
+  image_build:
+    runs-on: self-hosted
+    needs: docker_installation
+    steps:
+      - name: Build Docker Image
+        run: |
+          docker build -t starbucks-clone-image .
+      - name: Verify Docker Image
+        run: docker images | grep starbucks-clone-image      
+  run_docker_container:
+    runs-on: self-hosted
+    needs: image_build
+    steps:
+      - name: Run Docker Container
+        run: |
+          docker run -d -p 3000:3000 --name starbucks-clone-container starbucks-clone-image
+      - name: Verify Docker Container is Running
+        run: docker ps | grep starbucks-clone-container
