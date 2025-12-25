@@ -30,15 +30,27 @@ jobs:
 
   install_dependencies:
     runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: ./starbucks
     steps:
     - name: Install Dependencies
       run: npm install
   tests:
     runs-on: self-hosted
     needs: install_dependencies
+    defaults:
+      run:
+        working-directory: ./starbucks
     steps:
     - name: Run Tests 
       run: npm run test
-
-    - name: Start Application
-      run: echo "Application Started"
+  start_application:
+    runs-on: self-hosted
+    needs: tests
+    defaults:
+        run:
+          working-directory: ./starbucks
+    steps:
+      - name: Start Application
+        run: npm start
