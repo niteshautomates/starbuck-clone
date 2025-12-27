@@ -60,7 +60,7 @@ jobs:
     needs: tests
     steps:
       - name: Trivy File System Scan
-        uses: aquasecurity/trivy-action@m0.68.2
+        uses: aquasecurity/trivy-action@0.68.2
         with:
           scan-type: fs
           scan-ref: .
