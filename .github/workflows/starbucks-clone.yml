@@ -114,7 +114,20 @@ jobs:
           format: table
           # exit-code: '1'
           severity: CRITICAL,HIGH
-          ignore-unfixed: true        
+          ignore-unfixed: true     
+  docker_push_to_repo:
+      runs-on: self-hosted
+      needs: docker_image_scan
+      steps:
+        - name: Log in to Docker Hub
+          uses: docker/login-action@v2
+          with:
+            username: ${{ secrets.DOCKER_HUB_USERNAME }}
+            password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+        - name: Push Docker Image to Docker Hub
+          run: |
+            docker tag starbucks-clone-image ${{ secrets.DOCKER_HUB_USERNAME }}/starbucks-clone-image:latest
+            docker push ${{ secrets.DOCKER_HUB_USERNAME }}/starbucks-clone-image:latest             
   run_docker_container:
     runs-on: self-hosted
     needs: docker_installation
