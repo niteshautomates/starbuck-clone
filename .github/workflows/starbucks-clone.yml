@@ -55,6 +55,32 @@ jobs:
   #   steps:
   #     - name: Start Application
   #       run: echo "Application Started"
+  sonarqube:
+    runs-on: self-hosted
+    needs: tests
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required for accurate SCM analysis
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v2 # Use the latest version from GitHub Marketplace
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+        with:
+          args: >
+            -Dsonar.projectKey=STARBUCKS_CLONE_PROJECT
+            -Dsonar.sources=.
+            # Add other properties here, e.g., exclusions
+
+      - name: SonarQube Quality Gate check
+        uses: SonarSource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
   trivy_fs_scan:
     runs-on: self-hosted
     needs: tests
@@ -70,7 +96,7 @@ jobs:
           ignore-unfixed: true
   docker_installation:
     runs-on: self-hosted
-    needs: tests
+    needs: [ tests, sonarqube ]
     steps:
       - name: Build Docker Image
         run: |
