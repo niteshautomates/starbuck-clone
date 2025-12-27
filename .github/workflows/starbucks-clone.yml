@@ -73,7 +73,6 @@ jobs:
           args: >
             -Dsonar.projectKey=STARBUCKS_CLONE_PROJECT
             -Dsonar.sources=.
-            # Add other properties here, e.g., exclusions
 
       - name: SonarQube Quality Gate check
         uses: SonarSource/sonarqube-quality-gate-action@master
