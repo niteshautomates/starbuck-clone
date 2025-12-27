@@ -60,12 +60,12 @@ jobs:
     needs: tests
     steps:
       - name: Trivy File System Scan
-        uses: aquasecurity/trivy-action@0.68.2
+        uses: aquasecurity/trivy-action@master
         with:
           scan-type: fs
           scan-ref: .
           format: table
-          # exit-code: '1'
+          #exit-code: '1'
           severity: CRITICAL,HIGH
           ignore-unfixed: true
   docker_installation:
@@ -82,7 +82,7 @@ jobs:
     needs: docker_installation
     steps:
       - name: Trivy Docker Image Scan
-        uses: aquasecurity/trivy-action@0.68.2
+        uses: aquasecurity/trivy-action@master
         with:
           scan-type: image
           image-ref: starbucks-clone-image
