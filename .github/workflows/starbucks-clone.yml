@@ -23,7 +23,7 @@ jobs:
         cache: 'npm'
 
   install_dependencies:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: checkout
     # defaults:
     #   run:
@@ -56,7 +56,7 @@ jobs:
   #     - name: Start Application
   #       run: echo "Application Started"
   sonarqube:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: tests
     steps:
       - name: Checkout repository
@@ -81,7 +81,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
   trivy_fs_scan:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: tests
     steps:
       - name: Trivy File System Scan
@@ -94,7 +94,7 @@ jobs:
           severity: CRITICAL,HIGH
           ignore-unfixed: true
   docker_installation:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [ tests, sonarqube ]
     steps:
       - name: Build Docker Image
@@ -103,7 +103,7 @@ jobs:
       - name: Verify Docker Image
         run: docker images | grep starbucks-clone-image      
   docker_image_scan:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: docker_installation
     steps:
       - name: Trivy Docker Image Scan
@@ -116,7 +116,7 @@ jobs:
           severity: CRITICAL,HIGH
           ignore-unfixed: true     
   docker_push_to_repo:
-      runs-on: self-hosted
+      runs-on: ubuntu-latest
       needs: docker_image_scan
       steps:
         - name: Log in to Docker Hub
@@ -129,7 +129,7 @@ jobs:
             docker tag starbucks-clone-image ${{ secrets.DOCKER_HUB_USERNAME }}/starbucks-clone-image:latest
             docker push ${{ secrets.DOCKER_HUB_USERNAME }}/starbucks-clone-image:latest             
   run_docker_container:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: docker_installation
     steps:
       - name: Run Docker Container
